@@ -155,9 +155,21 @@ async function main() {
     console.log(
       `Publishing also exposes preserved extra assets: ${decision.extras.join(", ") || "none"}`,
     );
-    const published = api(`${base}/releases/${release.id}`, "PATCH", {
+    let published = api(`${base}/releases/${release.id}`, "PATCH", {
       draft: false,
     });
+    if (published.tag_name !== tag) {
+      if (
+        !/^untagged-[a-z0-9]+$/i.test(published.tag_name || "") ||
+        published.name !== `Babel ${tag}` ||
+        published.target_commitish !== commit
+      )
+        throw new Error("Publication tag identity mismatch");
+      published = api(`${base}/releases/${release.id}`, "PATCH", {
+        tag_name: tag,
+        target_commitish: commit,
+      });
+    }
     if (
       published.draft ||
       published.tag_name !== tag ||
