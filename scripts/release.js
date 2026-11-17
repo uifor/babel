@@ -88,7 +88,7 @@ async function main() {
       );
     verifyMetadata(metadata, buffers, commit, version);
     fs.writeFileSync(path.join(directory, SUMS), formatSums(buffers));
-    const notes = `此版本改进自 0.1.5：原生 AppKit/Win32 管理窗口、按端点隔离密钥、统一翻译队列和缓存，以及配置冲突与卸载数据保留。\n\nWindows：下载 Babel-Installer.exe，选择 Discord 后安装。macOS：打开 Babel Manager.dmg，运行 Babel Manager 并安装。安装或卸载后完全退出并重新打开 Discord。普通卸载保留设置、密钥和缓存；清除数据需要明确勾选。\n\n验证源码：${commit}\nWindows：${buffers[PRODUCTS[1]].length} 字节；macOS：${buffers[PRODUCTS[0]].length} 字节。SHA256SUMS 包含两个安装包的校验值。`;
+    const notes = `此版本改进自 0.1.6：支持 Intel Mac 与 Apple Silicon 的通用 macOS 安装包，并继续提供原生 AppKit/Win32 管理窗口、按端点隔离密钥、统一翻译队列和缓存，以及配置冲突与卸载数据保留。\n\nWindows：下载 Babel-Installer.exe，选择 Discord 后安装。macOS：打开 Babel Manager.dmg，运行 Babel Manager 并安装。安装或卸载后完全退出并重新打开 Discord。普通卸载保留设置、密钥和缓存；清除数据需要明确勾选。\n\n验证源码：${commit}\nWindows：${buffers[PRODUCTS[1]].length} 字节；macOS：${buffers[PRODUCTS[0]].length} 字节。SHA256SUMS 包含两个安装包的校验值。`;
     if (decision.create) {
       gh([
         "release",

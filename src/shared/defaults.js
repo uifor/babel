@@ -1,7 +1,7 @@
 "use strict";
 
 // Keep in sync with package.json "version". Used for the GitHub update check.
-const BABEL_VERSION = "0.1.6";
+const BABEL_VERSION = "0.1.7";
 
 // Values are the established on-disk translation targets; only labels are UI copy.
 const TRANSLATION_LANGUAGES = Object.freeze([

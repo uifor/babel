@@ -50,7 +50,7 @@ test("error envelope drops secrets, URLs, free text, unknown reasons and wrong t
  assert.equal(publicFailure(new Error("secret")).error.code,"UNKNOWN");
 });
 test("all plugin state text and option tables are complete in each locale",()=>{
- const raw=catalogs(),params={count:12,size:40,value:80,language:"English",preview:"sk-…abcd",origin:"https://example.invalid",version:"0.1.6",message:"OS diagnostic",limit:12000,path:"/temporary/discord",provider:"Ollama",supporterA:"Lallen 女士",supporterB:"Silva 先生",status:429};
+ const raw=catalogs(),params={count:12,size:40,value:80,language:"English",preview:"sk-…abcd",origin:"https://example.invalid",version:"0.1.7",message:"OS diagnostic",limit:12000,path:"/temporary/discord",provider:"Ollama",supporterA:"Lallen 女士",supporterB:"Silva 先生",status:429};
  for(const locale of LOCALES){i18n.setLocale(locale);for(const id of Object.keys(i18n.__test.catalogs[locale])){const value=i18n.t(id,params);assert.ok(value.trim(),id);assert.doesNotMatch(value,/\{(?:count|size|preview|path|message|value|limit)\}/,id);}
  for(const preset of TRANSLATION_STYLE_PRESETS)assert.ok(raw[locale][`plugin.style.${preset.value}`]);
  const thanks=i18n.t("plugin.about.thanks",params);assert.match(thanks,/Lallen 女士/);assert.match(thanks,/Silva 先生/);}
@@ -59,9 +59,9 @@ test("all plugin state text and option tables are complete in each locale",()=>{
 test("test-only pseudo locale marks app copy and expands without shipping",t=>{
  const pseudo=Object.fromEntries(Object.entries(i18n.__test.catalogs.en).map(([id,value])=>[id,`⟦${value}${"~".repeat(Math.ceil(value.length*.4))}⟧`]));
  i18n.setLocale("en");i18n.__test.setTestCatalog(pseudo);
- for(const id of Object.keys(pseudo))assert.ok(i18n.t(id,{count:1,size:3,value:80,language:"English",preview:"masked",origin:"https://example.invalid",version:"0.1.6",message:"Diagnostic",limit:12000,path:"fixture",provider:"Ollama",supporterA:"Lallen 女士",supporterB:"Silva 先生",status:429}).startsWith("⟦"),id);
+ for(const id of Object.keys(pseudo))assert.ok(i18n.t(id,{count:1,size:3,value:80,language:"English",preview:"masked",origin:"https://example.invalid",version:"0.1.7",message:"Diagnostic",limit:12000,path:"fixture",provider:"Ollama",supporterA:"Lallen 女士",supporterB:"Silva 先生",status:429}).startsWith("⟦"),id);
  i18n.setLocale("en");const dir=fs.mkdtempSync(path.join(os.tmpdir(),"babel-pseudo-"));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));const payload=require("../scripts/lib/payload").emitPayload(dir);
- assert.equal(payload.version,"0.1.6");
+ assert.equal(payload.version,"0.1.7");
 });
 test("translation domain and runtime cores do not import localization",()=>{
  const files=["src/shared/translate.js","src/shared/language.js",...fs.readdirSync(path.join(__dirname,"../src/mod/core")).filter(x=>x.endsWith(".js")).map(x=>`src/mod/core/${x}`)];
