@@ -128,6 +128,8 @@ test("a successful manager build replaces only Mac outputs and keeps Windows byt
   assert.equal(after.has("build-mac.json"), false);
   // The orchestration only shelled out to the expected build commands.
   assert.deepEqual([...new Set(stub.commands.map(([name]) => name))].sort(), ["clang", "codesign", "ditto", "hdiutil", "ln", "xattr"]);
+  const clang = stub.commands.find(([name]) => name === "clang");
+  assert.deepEqual(clang.slice(1, 5), ["-arch", "x86_64", "-arch", "arm64"]);
 });
 
 test("distribution verifier validates the DMG instead of the removed zip artifact", () => {
@@ -139,6 +141,8 @@ test("distribution verifier validates the DMG instead of the removed zip artifac
   assert.match(source, /hdiutil/);
   assert.match(source, /attach/);
   assert.match(source, /codesign/);
+  assert.match(source, /archs\.includes\("x86_64"\)/);
+  assert.match(source, /archs\.includes\("arm64"\)/);
   assert.doesNotMatch(source, /\.zip/);
 });
 

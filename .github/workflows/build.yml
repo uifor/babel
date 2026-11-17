@@ -9,7 +9,9 @@ permissions:
   contents: read
 jobs:
   build-mac:
-    runs-on: macos-latest
+    # Build and smoke-test the universal app on an Apple Silicon runner.
+    # The separate Intel job below verifies the other native execution path.
+    runs-on: macos-15
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +21,10 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - run: node scripts/verify-dist.js
+      - name: Confirm Apple Silicon runner and verify universal DMG
+        run: |
+          test "$(uname -m)" = "arm64"
+          node scripts/verify-dist.js
       - uses: actions/upload-artifact@v4
         with:
           name: babel-mac
@@ -27,6 +32,25 @@ jobs:
             dist/Babel Manager.dmg
             dist/build-mac.json
           if-no-files-found: error
+  verify-mac-intel:
+    needs: build-mac
+    # macos-15-intel is the Intel-hosted runner used for native x86_64 validation.
+    runs-on: macos-15-intel
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: babel-mac
+          path: dist
+      - name: Confirm Intel runner and verify universal DMG
+        run: |
+          test "$(uname -m)" = "x86_64"
+          node scripts/verify-dist.js
   build-windows-exe:
     runs-on: windows-latest
     timeout-minutes: 20
@@ -68,7 +92,7 @@ jobs:
             dist/build-windows.json
           if-no-files-found: error
   prepare-draft:
-    needs: [build-mac, build-windows-exe]
+    needs: [build-mac, verify-mac-intel, build-windows-exe]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:

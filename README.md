@@ -101,7 +101,7 @@ Chat Completions 或 Responses。按服务商说明选择协议，不需要调�
 2. 运行 **Babel Manager**，确认目标目录后点击 **安装 / 更新**。
 3. 成功后点击 **重启 Discord**，重新打开 Discord 并退出安装器。
 
-支持 **Apple Silicon（M1 及更新机型）**。应用暂未公证。
+支持 **Intel Mac（x86_64）和 Apple Silicon（arm64）**。应用暂未公证。
 
 如果提示无法访问 Discord 数据，通过安装器的 **文件 → 选择 Discord 文件夹…**
 （英文界面为 **File → Choose Discord folder…**）选择窗口中显示的目录，再重试。

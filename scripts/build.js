@@ -68,6 +68,8 @@ function createManagerApp(buildRoot) {
     "/usr/bin/clang",
     [
       "-arch",
+      "x86_64",
+      "-arch",
       "arm64",
       "-mmacosx-version-min=11.0",
       "-fobjc-arc",

@@ -103,14 +103,16 @@ async function main() {
         stdio: ["ignore", "pipe", "pipe"],
       })
       .trim()
-      .split(/\s+/);
+      .split(/\s+/)
+      .filter(Boolean);
 
-    if (!archs.includes("arm64")) {
-      throw new Error(`${APP_NAME} is missing an arm64 executable slice.`);
-    }
-    if (archs.includes("x86_64")) {
+    if (
+      archs.length !== 2 ||
+      !archs.includes("arm64") ||
+      !archs.includes("x86_64")
+    ) {
       throw new Error(
-        `${APP_NAME} unexpectedly contains an x86_64 executable slice.`,
+        `${APP_NAME} must contain exactly arm64 and x86_64 executable slices; found ${archs.join(", ") || "none"}.`,
       );
     }
     writeMetadata("mac", DMG_NAME, manifest, {

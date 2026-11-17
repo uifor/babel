@@ -107,7 +107,7 @@ Make sure your download came from this repository's Releases page.
 2. Open **Babel Manager**, check the target folder, and click **Install / Update**.
 3. After a successful installation, click **Restart Discord** to reopen Discord and close the manager.
 
-Supports **Apple Silicon (M1 or newer)**. The app is not notarized.
+Supports **Intel Mac (x86_64) and Apple Silicon (arm64)**. The app is not notarized.
 
 If access to Discord data is denied, use **File → Choose Discord folder…**, select the
 folder shown in the manager, and retry.
