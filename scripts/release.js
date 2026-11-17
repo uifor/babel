@@ -121,13 +121,14 @@ async function main() {
       body: notes,
       name: `Babel ${tag}`,
     });
+    const uploadTag = release.tag_name;
     for (const name of OWNED) {
       const current = api(`${base}/releases/${release.id}`);
       inspect(current);
       gh([
         "release",
         "upload",
-        tag,
+        uploadTag,
         path.join(directory, name),
         "--repo",
         repo,
