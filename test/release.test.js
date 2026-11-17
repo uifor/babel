@@ -39,6 +39,14 @@ test("draft preparation creates an absent draft and replaces only owned stale as
   assert.deepEqual(decision.replace, OWNED);
   assert.deepEqual(decision.extras, ["owner-notes.pdf"]);
 });
+test("draft preparation accepts GitHub's untagged draft placeholder only for the pinned release", () => {
+  const release = draft();
+  release.tag_name = "untagged-0123456789abcdef";
+  release.name = `Babel ${pins.tag}`;
+  assert.equal(reconcile({ ...pins, mode: "prepare", release }).create, false);
+  release.target_commitish = "other-commit";
+  assert.throws(() => reconcile({ ...pins, mode: "prepare", release }));
+});
 for (const [name, change] of [
   ["public version", (v) => (v.release.draft = false)],
   ["release identity", (v) => (v.release.tag_name = "v0.1.5")],

@@ -34,7 +34,12 @@ function reconcile({
     if (mode !== "prepare") throw new Error("Draft release missing");
     return { create: true, replace: [], extras: [] };
   }
-  if (!release.id || release.tag_name !== tag)
+  const draftPlaceholder =
+    release.draft === true &&
+    /^untagged-[a-z0-9]+$/i.test(release.tag_name || "") &&
+    release.name === `Babel ${tag}` &&
+    release.target_commitish === commit;
+  if (!release.id || (release.tag_name !== tag && !draftPlaceholder))
     throw new Error("Release identity conflict");
   if (!release.draft)
     throw new Error("Version is already public; no mutation permitted");

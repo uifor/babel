@@ -51,7 +51,16 @@ async function main() {
     let found = [];
     for (let page = 1; page <= 100; page++) {
       const values = api(`${base}/releases?per_page=100&page=${page}`);
-      found.push(...values.filter((value) => value.tag_name === tag));
+      found.push(
+        ...values.filter(
+          (value) =>
+            value.tag_name === tag ||
+            (value.draft === true &&
+              /^untagged-[a-z0-9]+$/i.test(value.tag_name || "") &&
+              value.name === `Babel ${tag}` &&
+              value.target_commitish === commit),
+        ),
+      );
       if (values.length < 100) break;
       if (page === 100) throw new Error("Release inventory exceeded bound");
     }
