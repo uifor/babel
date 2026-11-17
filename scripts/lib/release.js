@@ -1,8 +1,17 @@
 "use strict";
 const { createHash } = require("node:crypto");
 const PRODUCTS = ["Babel Manager.dmg", "Babel-Installer.exe"],
+  RELEASE_PRODUCTS = ["Babel.Manager.dmg", "Babel-Installer.exe"],
   SUMS = "SHA256SUMS",
-  OWNED = [...PRODUCTS, SUMS];
+  OWNED = [...RELEASE_PRODUCTS, SUMS];
+function releaseName(localName) {
+  const index = PRODUCTS.indexOf(localName);
+  return index >= 0 ? RELEASE_PRODUCTS[index] : localName;
+}
+function localName(assetName) {
+  const index = RELEASE_PRODUCTS.indexOf(assetName);
+  return index >= 0 ? PRODUCTS[index] : assetName;
+}
 const sha256 = (data) => createHash("sha256").update(data).digest("hex");
 function assertPins({
   tag,
@@ -66,7 +75,12 @@ function reconcile({
   };
 }
 function formatSums(buffers) {
-  return PRODUCTS.map((name) => `${sha256(buffers[name])}  ${name}\n`).join("");
+  return PRODUCTS
+    .map((name) => {
+      const asset = releaseName(name);
+      return `${sha256(buffers[name] || buffers[asset])}  ${asset}\n`;
+    })
+    .join("");
 }
 function verifySums(sums, buffers, pinnedSumsDigest) {
   if (
@@ -108,8 +122,11 @@ function verifyMetadata(metadata, buffers, commit, version) {
 }
 module.exports = {
   PRODUCTS,
+  RELEASE_PRODUCTS,
   SUMS,
   OWNED,
+  localName,
+  releaseName,
   sha256,
   reconcile,
   formatSums,

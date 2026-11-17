@@ -5,7 +5,10 @@ const test = require("node:test"),
   path = require("node:path");
 const {
   PRODUCTS,
+  RELEASE_PRODUCTS,
   OWNED,
+  localName,
+  releaseName,
   sha256,
   reconcile,
   formatSums,
@@ -26,6 +29,11 @@ const draft = () => ({
   draft: true,
   target_commitish: commit,
   assets: OWNED.map((name, id) => ({ name, id: id + 10 })),
+});
+test("release asset names normalize the macOS DMG while local artifacts keep their filename", () => {
+  assert.equal(RELEASE_PRODUCTS[0], "Babel.Manager.dmg");
+  assert.equal(releaseName(PRODUCTS[0]), RELEASE_PRODUCTS[0]);
+  assert.equal(localName(RELEASE_PRODUCTS[0]), PRODUCTS[0]);
 });
 test("draft preparation creates an absent draft and replaces only owned stale assets", () => {
   assert.equal(
@@ -54,7 +62,7 @@ for (const [name, change] of [
   ["version mismatch", (v) => (v.manifestVersions = ["0.1.5"])],
   [
     "duplicate required asset",
-    (v) => v.release.assets.push({ id: 20, name: PRODUCTS[0] }),
+    (v) => v.release.assets.push({ id: 20, name: RELEASE_PRODUCTS[0] }),
   ],
 ])
   test(`release rejects ${name}`, () => {
